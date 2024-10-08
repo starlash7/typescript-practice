@@ -4,16 +4,17 @@ import Editor from "./components/Editor";
 import { Todo } from "./tpyes";
 import TodoItem from "./components/Todoitem";
 
-type Action = {
-  type: "CREATE",
-  data: {
-    id: number;
-    content: string;
+type Action =
+  | {
+    type: "CREATE";
+    data: {
+      id: number;
+      content: string;
+    };
   }
-}
   | { type: "DELETE"; id: number };
 
-function reducer(state: Todo[], action: Action) {
+function reducer(state: Todo[], action: Action): Todo[] {
   switch (action.type) {
     case "CREATE": {
       return [...state, action.data];
@@ -25,42 +26,42 @@ function reducer(state: Todo[], action: Action) {
 }
 
 function App() {
-  const [todos, dispatch] = useReducer([]);
+  const [todos, dispatch] = useReducer(reducer, []);
 
   const idRef = useRef(0);
 
-
-
   const onClickAdd = (text: string) => {
-
     dispatch({
       type: "CREATE",
       data: {
         id: idRef.current++,
         content: text,
       }
-    })
+    });
   }
 
   const onClickDelete = (id: number) => {
     dispatch({
       type: "DELETE",
       id: id,
-    })
+    });
   }
 
   useEffect(() => {
     console.log(todos);
   }, [todos]);
 
-  return <div className="App">
-    <h1>Todo</h1>
-    <Editor onClickAdd={onClickAdd} />
-    <div>
-      {todos.map((todo) => (<TodoItem key={todo.id} {...todo} onClickDelete={onClickDelete} />))}
+  return (
+    <div className="App">
+      <h1>Todo</h1>
+      <Editor onClickAdd={onClickAdd} />
+      <div>
+        {todos.map((todo) => (
+          <TodoItem key={todo.id} {...todo} onClickDelete={onClickDelete} />
+        ))}
+      </div>
     </div>
-
-  </div>;
+  );
 }
 
 export default App;
